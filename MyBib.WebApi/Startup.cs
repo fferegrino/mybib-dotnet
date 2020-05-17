@@ -12,13 +12,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
+using MyBib.WebApi.Services;
+using MyBib.WebApi.Middleware;
+
 namespace MyBib.WebApi
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
+        IWebHostEnvironment environment;
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
             Configuration = configuration;
+            environment = env;
         }
 
         public IConfiguration Configuration { get; }
@@ -26,12 +31,22 @@ namespace MyBib.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            if(this.environment.IsDevelopment())
+            {
+                services.AddTransient<IPaymentService, PaymentService>();
+            }
+            else
+            {
+                services.AddTransient<IPaymentService, ExternalPaymentService>();
+            }
             services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMiddleware<MyMiddleware>();
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
