@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using MyBib.WebApi.Middleware;
 
 namespace MyBib.WebApi
 {
@@ -32,6 +33,8 @@ namespace MyBib.WebApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseSampleMiddleware();
+            
             app.Run(async context =>{
                 await context.Response.WriteAsync("Hello world!");
             });
