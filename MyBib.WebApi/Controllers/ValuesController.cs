@@ -9,14 +9,7 @@ namespace MyBib.WebApi.Controllers
     [Route("[controller]")]
     public class ValuesController : ControllerBase
     {
-        IPaymentService paymentService;
-
-        public ValuesController(IPaymentService paymentService)
-        {
-            this.paymentService = paymentService;
-        }
-
-        public string Get()
+        public string Get([FromServices]IPaymentService paymentService)
         {
             return paymentService.GetMessage();
         }
